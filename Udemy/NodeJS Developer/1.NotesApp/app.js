@@ -20,9 +20,26 @@ yargs.command({
             type: 'string'
         }
     },
-    handler: function(args){
-        notes.addNotes(args.title,args.body)
-    }
+    handler: (args) => notes.addNotes(args.title,args.body)
+})
+
+yargs.command({
+    command: 'list',
+    describe: 'List notes',
+    handler: (args) => notes.listNotes()
+})
+
+yargs.command({
+    command: 'get',
+    describe: 'Get a note',
+    builder: {
+        title: {
+            describe: 'Note Title',
+            demandOption: true,
+            type: 'string'
+        }
+    },
+    handler: (args) => notes.getNotes(args.title)
 })
 
 //demandOption is to set required or not
@@ -36,9 +53,7 @@ yargs.command({
             type: 'string'
         }
     },
-    handler: function(args){
-        notes.removeNotes(args.title)
-    }
+    handler: (args) => notes.removeNotes(args.title)
 })
 
 //This is required to return values from yargs
