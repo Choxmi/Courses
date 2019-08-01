@@ -1,6 +1,8 @@
 const path = require('path')
 const express = require('express')
 const hbs = require('hbs')
+const geocode = require('./utils/geocode.js')
+const forecast = require('./utils/forecast.js')
 
 const app = express()
 
@@ -47,6 +49,39 @@ app.get('', (req, res) => {
         title: 'Demo title',
         author: 'Choxmi'
     })
+})
+
+app.get('/weather', (req, res) => {
+    if(req.query.lat && req.query.lng){
+        geocode(req.query.address,(data,error) => {
+            if(error){
+                console.log(error)
+                res.send({
+                    error: 'Invalid Request'
+                })
+            }
+            if(data !== undefined){
+                forecast(data,(forecast,err) => {
+                    if(error)
+                    console.log(error)
+                    
+                    res.send({
+                        forecast: forecast,
+                        location: data.location,
+                        request: req.query.address
+                    })
+                })
+            } else {
+                res.send({
+                    error: 'No matching account found'
+                })
+            }
+        })
+    } else {
+        res.send({
+            error: 'You Must provide an address'
+        })
+    }
 })
 
 app.get('/about', (req, res) => {
